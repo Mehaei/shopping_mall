@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品列表页</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <style>
+        .table th, .table td {
+
+        text-align: center;
+
+        height:38px;
+        }
+
+    </style>
+</head>
+<body>
+<div style="container-fluid">
+    <table class="table table-striped" style="table-layout:fixed">
+        <tr>
+            <th>商品名称</th>
+            <th>商品价格</th>
+            <th>商品销量</th>
+            <th>商品亮点</th>
+            <th>商品分类</th>
+            <th>商品卖家</th>
+            <th>商品来源</th>
+            <th>商品详情</th>
+            <th>更新时间</th>
+        </tr>
+        {% for shop in shops %}
+        <tr>
+            <td class="td1" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ shop['name'] }}</td>
+            <td>{{ shop['price'] }}</td>
+            <td>{{ shop['comment'] }}</td>
+            <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ shop['tags'] }}</td>
+            <td>{{ shop['shop_class'] }}</td>
+            <td>{{ shop['seller'] }}</td>
+            <td>{{ shop['source'] }}</td>
+            <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"><a href="{{ shop['url'] }}">{{ shop['url'] }}</a></td>
+            <td>{{ shop['crawl_time']  }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+</body>
+</html>
