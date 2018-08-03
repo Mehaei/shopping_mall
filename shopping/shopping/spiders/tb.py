@@ -18,7 +18,7 @@ class TbSpider(scrapy.Spider):
 
     def parse(self, response):
         url = "https://s.taobao.com/search?q=男装&s=%d"
-        for i in range(1,2):
+        for i in range(1,100):
             shop_list_url = url % ((i-1) * 44)
             # print(shop_list_url)
             yield scrapy.Request(shop_list_url,callback=self.get_shop_list)

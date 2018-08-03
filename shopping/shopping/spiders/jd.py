@@ -2,6 +2,7 @@ import scrapy
 from ..items import ShoppingItem
 import datetime
 import math
+from selenium import webdriver
 class JingDongSpider(scrapy.Spider):
     name = 'jd'
     start_urls = ['https://www.jd.com/']
@@ -10,20 +11,36 @@ class JingDongSpider(scrapy.Spider):
         'ITEM_PIPELINES' : {
            'shopping.pipelines.ShoppingPipeline': 300,
             'shopping.pipelines.ShoppingImagePipeline': 1
-        }
+        },
+         'DOWNLOADER_MIDDLEWARES' : {
+            'shopping.mymiddlewares.ShoppingDownloaderMiddleware': 500,
+         }
     }
 
+    # 在程序开始时，创建浏览器对象，避免每次请求都经过中间件，打开关闭浏览器
+    def __init__(self):
+        print('spider open')
+        self.browser = webdriver.PhantomJS(executable_path=r'E:\reptile\software\phantomjs-2.1.1-windows\bin\phantomjs.exe')
+        # super(JingDongSpider, self).__init__()
+        super().__init__()
+    # 当程序结束时，关闭浏览器
+    def closed(self,spider):
+        print('spider closed')
+        self.browser.close()
 
     def parse(self, response):
         url = 'https://search.jd.com/Search?keyword=手机&enc=utf-8&page=%d'
-        for i in range(1,200,2):
+        for i in range(1,3,2):
             search_url = url % i
             yield scrapy.Request(search_url,callback=self.get_shopping_list,meta={'i' : i})
-            self.sign = True
+            # self.sign = True
 
     def get_shopping_list(self,response):
 
         shop_list = response.xpath('//div[@id="J_goodsList"]/ul/li')
+        # print(shop_list)
+        print(len(shop_list))
+
         shop_urll = "https://item.jd.com/%s.html"
         for shop in shop_list:
 

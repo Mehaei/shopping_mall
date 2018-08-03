@@ -9,12 +9,24 @@ class MeiLiSpider(scrapy.Spider):
         'ITEM_PIPELINES' : {
            'shopping.pipelines.ShoppingPipeline': 300,
             'shopping.pipelines.ShoppingImagePipeline': 1
+        },
+        'DEFAULT_REQUEST_HEADERS' : {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+            # "Accept-Encoding": "gzip, deflate",
+            # "Accept-Language": "zh-CN,zh;q=0.9",
+            # "Cache-Control": "max-age=0",
+            # "Connection": "keep-alive",
+            # "Cookie": "__mgjuuid=1c92b24c-b16f-4298-a73c-850718f007c2; _mwp_h5_token_enc=bcc46be4abf4102bd19443a445ad6ec6; _mwp_h5_token=38814a2a1b1df9f153306da9f1da7a55_1532529398213",
+            # "Host": "www.meilishuo.com",
+            # "Referer": "http://www.meilishuo.com/",
+            # "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36",
         }
     }
 
     def parse(self, response):
         url = "http://www.meilishuo.com/search/catalog/10057053?page=%d&action=bags"
-        for i in range(1,5):
+        for i in range(10,100):
             shop_page_url = url % i
             yield scrapy.Request(shop_page_url,callback=self.get_shop_list)
 
@@ -33,9 +45,8 @@ class MeiLiSpider(scrapy.Spider):
             shop_price = shop_price.split('~')[0]
 
         shop_comment = response.xpath('//dd[@class="property-extra fr"]/span[last()]/span/text()').extract_first().strip(' \n')
-
         shop_img_url = response.xpath('//button[@class="middle"]/img/@src').extract()
-
+        shop_img_url = ['http:'+ i for i in shop_img_url]
         shop_tags = response.xpath('//ul[@class="fl clearfix list"]/li/span/text()').extract()
 
         shop_tags = ','.join([i.strip(' \n ') for i in shop_tags]).strip(',').replace(',,',',')
