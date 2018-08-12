@@ -27,6 +27,15 @@ class ShoppingPipeline(object):
     def close_spider(self,spider):
         self.cursor.close()
         self.db.close()
+# 测试中间件
+# class ShopingPipeline(object):
+#     i = 0
+#     def process_item(self,item, spider):
+#         print(self.i)
+#         self.i += 1
+#         return item
+
+
 
 class ShoppingImagePipeline(ImagesPipeline):
     def item_completed(self, results, item, info):
